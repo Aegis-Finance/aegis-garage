@@ -1,0 +1,23 @@
+# Cloudflare Tunnel for garage.aegisprotocol.org
+# Use when ports 80/443 are occupied on the VPS (e.g. by xray).
+#
+# 1. In Cloudflare Zero Trust → Networks → Tunnels → Create tunnel
+# 2. Name: aegis-garage
+# 3. Public hostname: garage.aegisprotocol.org → http://localhost:4321
+# 4. Copy the tunnel token and save to /etc/cloudflared/token on the VPS
+# 5. systemctl enable --now cloudflared
+
+[Unit]
+Description=Cloudflare Tunnel (Aegis Garage)
+After=network-online.target aegis-garage.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cloudflared tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+Restart=always
+RestartSec=5
+EnvironmentFile=-/etc/cloudflared/env
+
+[Install]
+WantedBy=multi-user.target

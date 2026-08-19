@@ -8,3 +8,4 @@ graphify-out/
 *.log
 .cursor/
 DEVELOPMENT.md
+deploy/_*.py

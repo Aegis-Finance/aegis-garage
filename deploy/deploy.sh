@@ -16,6 +16,9 @@ npm ci
 echo "==> Building..."
 npm run build
 
+echo "==> Setting permissions..."
+chown -R www-data:www-data "$APP_DIR"
+
 echo "==> Restarting service..."
 sudo systemctl restart "$SERVICE"
 

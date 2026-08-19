@@ -1,0 +1,8 @@
+name = "aegis-garage-proxy"
+main = "cloudflare-worker-proxy.js"
+compatibility_date = "2026-08-19"
+workers_dev = false
+
+routes = [
+  { pattern = "garage.aegisprotocol.org/*", zone_name = "aegisprotocol.org" }
+]

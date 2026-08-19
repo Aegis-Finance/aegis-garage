@@ -10,6 +10,15 @@ export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   integrations: [react(), markdoc(), tailwind(), keystatic()],
+  server: {
+    allowedHosts: ['garage.aegisprotocol.org', 'origin-garage.aegisprotocol.org'],
+  },
+  security: {
+    allowedDomains: [
+      { hostname: 'garage.aegisprotocol.org', protocol: 'https' },
+      { hostname: 'origin-garage.aegisprotocol.org', protocol: 'http' },
+    ],
+  },
   env: {
     schema: {
       KEYSTATIC_GITHUB_CLIENT_ID: envField.string({
