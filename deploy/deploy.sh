@@ -15,6 +15,11 @@ npm ci
 
 echo "==> Building..."
 export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=1536}"
+set -a
+# shellcheck disable=SC1091
+source "$APP_DIR/.env" 2>/dev/null || true
+set +a
+export KEYSTATIC_STORAGE="${KEYSTATIC_STORAGE:-local}"
 npm run build
 
 echo "==> Setting permissions..."

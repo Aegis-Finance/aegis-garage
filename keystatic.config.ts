@@ -2,10 +2,12 @@ import { config, fields, collection } from '@keystatic/core'
 
 const isDev = import.meta.env?.DEV ?? process.env.NODE_ENV === 'development'
 const storageMode =
-  process.env.KEYSTATIC_STORAGE ?? import.meta.env.KEYSTATIC_STORAGE ?? 'github'
+  process.env.KEYSTATIC_STORAGE ??
+  import.meta.env.KEYSTATIC_STORAGE ??
+  'local'
 
 const storage =
-  isDev || storageMode === 'local'
+  isDev || storageMode !== 'github'
     ? { kind: 'local' as const }
     : {
         kind: 'github' as const,
