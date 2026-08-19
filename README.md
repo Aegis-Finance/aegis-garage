@@ -55,6 +55,8 @@ bash deploy/deploy.sh
 
 First-time server setup: `bash deploy/bootstrap-vps.sh` (see `deploy/` for nginx + systemd configs).
 
+**Production routing:** Cloudflare Worker `aegis-garage-proxy` forwards `garage.aegisprotocol.org` to the VPS Node app on port 4321 (ports 80/443 on the VPS are used by xray). Origin hostname: `origin-garage.aegisprotocol.org` (DNS-only A record).
+
 ## Publishing workflow
 
 1. Go to `https://garage.aegisprotocol.org/keystatic`

@@ -81,7 +81,9 @@ function writeArticle(relPath, draft) {
   const publishDate = draft ? '2026-01-01' : '2026-07-01'
   writeFileSync(
     indexPath,
-    `title: ${JSON.stringify(title)}
+    `title:
+  slug: ${slug}
+  name: ${JSON.stringify(title)}
 description: ${JSON.stringify(description)}
 publishDate: ${publishDate}
 category: philosophy

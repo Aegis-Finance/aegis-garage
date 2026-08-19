@@ -15,8 +15,10 @@ const marked = new Marked({ breaks: false, gfm: true, renderer })
 
 const ROOT = join(process.cwd(), 'content')
 
+type KeystaticSlug = { slug: string; name: string }
+
 export type ArticleMeta = {
-  title: string
+  title: string | KeystaticSlug
   kicker?: string
   description?: string
   publishDate?: string
@@ -46,6 +48,17 @@ export type Category = {
 function readYaml<T>(path: string): T | null {
   if (!existsSync(path)) return null
   return loadYaml(readFileSync(path, 'utf8')) as T
+}
+
+function resolveArticleTitle(
+  title: ArticleMeta['title'],
+  slug: string,
+  body: string,
+): string {
+  if (typeof title === 'object' && title?.name) return title.name
+  if (typeof title === 'string' && title.trim()) return title
+  const h1 = body.match(/^#\s+(.+)$/m)
+  return h1?.[1]?.trim() ?? slug
 }
 
 function readBody(dir: string): string {
@@ -85,7 +98,10 @@ export function getAllArticles(): Article[] {
       const body = readBody(join(dir, slug))
       return {
         slug,
-        meta,
+        meta: {
+          ...meta,
+          title: resolveArticleTitle(meta.title, slug, body),
+        },
         body,
         bodyHtml: marked.parse(body, { async: false }) as string,
       }
