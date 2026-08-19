@@ -59,6 +59,11 @@ export default defineConfig({
     },
   },
   vite: {
+    define: {
+      'import.meta.env.KEYSTATIC_STORAGE': JSON.stringify(
+        process.env.KEYSTATIC_STORAGE ?? 'local',
+      ),
+    },
     ssr: {
       external: ['js-yaml', 'marked'],
     },

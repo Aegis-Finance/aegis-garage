@@ -1,18 +1,18 @@
 import { config, fields, collection } from '@keystatic/core'
 
-const isDev = import.meta.env?.DEV ?? process.env.NODE_ENV === 'development'
+// VPS production uses on-disk content/ (see README). GitHub-backed editing
+// requires KEYSTATIC_STORAGE=github at build time plus a GitHub App — rebuild
+// after switching. Local is the reliable default for garage.aegisprotocol.org.
 const storageMode =
-  process.env.KEYSTATIC_STORAGE ??
-  import.meta.env.KEYSTATIC_STORAGE ??
-  'local'
+  process.env.KEYSTATIC_STORAGE ?? import.meta.env.KEYSTATIC_STORAGE ?? 'local'
 
 const storage =
-  isDev || storageMode !== 'github'
-    ? { kind: 'local' as const }
-    : {
+  storageMode === 'github'
+    ? {
         kind: 'github' as const,
         repo: 'Aegis-Finance/aegis-garage' as const,
       }
+    : { kind: 'local' as const }
 
 export default config({
   storage,
