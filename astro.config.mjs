@@ -36,6 +36,11 @@ export default defineConfig({
         access: 'secret',
         optional: true,
       }),
+      PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
       HOST: envField.string({
         context: 'server',
         access: 'public',

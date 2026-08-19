@@ -14,6 +14,7 @@ echo "==> Installing dependencies..."
 npm ci
 
 echo "==> Building..."
+export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=1536}"
 npm run build
 
 echo "==> Setting permissions..."

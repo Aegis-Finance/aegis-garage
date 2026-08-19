@@ -39,13 +39,29 @@ Output: `dist/client/` (static pages + Pagefind index), `dist/server/` (Node ent
 
 ### Keystatic GitHub mode (production admin)
 
-1. Create a [GitHub OAuth App](https://github.com/settings/developers):
-   - Homepage URL: `https://garage.aegisprotocol.org`
-   - Authorization callback URL: `https://garage.aegisprotocol.org/api/keystatic/github/oauth/callback`
-2. Copy `.env.example` to `.env` on the server and set:
+Keystatic requires a **GitHub App** (with Contents read/write), not a classic OAuth App. A classic OAuth App can log you in but cannot read or write repo content (`public_repo` scope missing).
+
+**One-time setup (recommended):**
+
+1. On your machine, temporarily remove `KEYSTATIC_GITHUB_CLIENT_ID` and `KEYSTATIC_GITHUB_CLIENT_SECRET` from `.env`.
+2. Run `npm run dev` and open [http://localhost:4321/keystatic/setup](http://localhost:4321/keystatic/setup).
+3. Enter deployed URL `https://garage.aegisprotocol.org` and org `Aegis-Finance`, then **Create GitHub App**.
+4. Install the app on `Aegis-Finance/aegis-garage` (all repositories or selected).
+5. Copy from the generated `.env` to the VPS `/var/www/aegis-garage/.env`:
    - `KEYSTATIC_GITHUB_CLIENT_ID`
    - `KEYSTATIC_GITHUB_CLIENT_SECRET`
-   - `KEYSTATIC_SECRET` — generate with `openssl rand -base64 32` (min 32 chars)
+   - `KEYSTATIC_SECRET`
+   - `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`
+6. Restart: `sudo systemctl restart aegis-garage`
+
+**Manual GitHub App** (if setup UI is unavailable): create at GitHub → Developer settings → GitHub Apps with:
+
+- Callback: `https://garage.aegisprotocol.org/api/keystatic/github/oauth/callback`
+- Permissions: Contents **Read and write**, Metadata **Read-only**, Pull requests **Read-only**
+- Request user authorization (OAuth) during installation: **enabled**
+- Install on `Aegis-Finance/aegis-garage`
+
+Then set the four env vars above on the VPS.
 
 ### Deploy
 
