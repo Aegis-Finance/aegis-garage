@@ -1,13 +1,13 @@
 import { config, fields, collection } from '@keystatic/core'
 
-const repo = process.env.KEYSTATIC_GITHUB_REPO ?? 'Aegis-Finance/aegis-garage'
+const isLocal = import.meta.env?.DEV ?? process.env.NODE_ENV === 'development'
 
-const isProd =
-  !!process.env.KEYSTATIC_GITHUB_REPO && !!process.env.KEYSTATIC_GITHUB_CLIENT_ID
-
-const storage = isProd
-  ? { kind: 'github' as const, repo }
-  : { kind: 'local' as const }
+const storage = isLocal
+  ? { kind: 'local' as const }
+  : {
+      kind: 'github' as const,
+      repo: 'Aegis-Finance/aegis-garage' as const,
+    }
 
 export default config({
   storage,
