@@ -38,4 +38,17 @@
   .prose-garage {
     @apply prose prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-terminal-accent prose-a:no-underline hover:prose-a:underline max-w-none;
   }
+  .prose-garage table {
+    @apply my-6 w-full border-collapse text-sm;
+  }
+  .prose-garage th,
+  .prose-garage td {
+    @apply border border-terminal-border px-3 py-2 align-top;
+  }
+  .prose-garage thead th {
+    @apply bg-terminal-surface font-semibold text-terminal-text;
+  }
+  .prose-garage tbody tr:nth-child(even) {
+    @apply bg-terminal-surface/40;
+  }
 }

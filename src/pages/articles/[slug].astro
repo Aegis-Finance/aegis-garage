@@ -8,12 +8,15 @@ import {
   getCategoryMap,
   getArticle,
 } from '../../lib/content-fs'
+import { bodyUsesMermaid } from '../../lib/markdoc-render'
 
 const { slug } = Astro.params
 const article = getArticle(slug!)
 if (!article || article.meta.draft) {
   return Astro.redirect('/')
 }
+
+const showMermaid = bodyUsesMermaid(article.body)
 
 const categoryMap = getCategoryMap()
 const cat = article.meta.category ? categoryMap.get(article.meta.category) : null
@@ -109,3 +112,14 @@ function formatDate(iso: string | null | undefined) {
     )
   }
 </BaseLayout>
+
+{showMermaid && (
+  <script is:inline src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' })
+      }
+    })
+  </script>
+)}
