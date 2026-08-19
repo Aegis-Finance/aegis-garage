@@ -141,7 +141,7 @@ KEYSTATIC_STORAGE=local
 KEYSTATIC_SECRET=   # openssl rand -base64 32
 ```
 
-With local storage, all 7 articles on disk appear in the admin immediately — no GitHub login required. Edits save to `/var/www/aegis-garage/content/` and show on article/home/category pages immediately (server-rendered from disk). Site search (Pagefind) refreshes after `deploy/deploy.sh`.
+With local storage, all 7 articles on disk appear in the admin immediately — no GitHub login required. Edits save to `/var/www/aegis-garage/content/` and show on article/home/category/search pages immediately (server-rendered from disk).
 
 **Sync edits to GitHub** (optional, from VPS):
 

@@ -1,5 +1,5 @@
 ---
-export const prerender = true
+export const prerender = false
 
 import BaseLayout from '../layouts/BaseLayout.astro'
 ---
@@ -8,35 +8,158 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   <section class="mx-auto max-w-3xl px-4 py-14 sm:py-20">
     <p class="section-label">Search</p>
     <h1 class="mt-3 text-3xl font-bold tracking-tight">Find an article</h1>
-    <p class="mt-3 text-terminal-text-dim">Full-text search across all published essays.</p>
-    <div id="search" class="mt-8"></div>
+    <p class="mt-3 text-terminal-text-dim">Live search across all published essays.</p>
+
+    <label class="mt-8 block">
+      <span class="sr-only">Search articles</span>
+      <input
+        id="garage-search-input"
+        type="search"
+        name="q"
+        placeholder="Search by title, topic, or keyword…"
+        autocomplete="off"
+        class="w-full rounded-xl border border-terminal-border bg-terminal-surface px-4 py-3 text-base text-terminal-text shadow-sm outline-none transition focus:border-terminal-accent focus:ring-2 focus:ring-terminal-accent/20"
+      />
+    </label>
+
+    <p id="garage-search-status" class="mt-4 text-sm text-terminal-text-dim" aria-live="polite"></p>
+
+    <ul id="garage-search-results" class="mt-6 space-y-4" aria-label="Search results"></ul>
   </section>
 </BaseLayout>
 
-<script is:inline src="/pagefind/pagefind-ui.js"></script>
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    if (typeof PagefindUI !== 'undefined') {
-      new PagefindUI({
-        element: '#search',
-        showImages: false,
-        resetStyles: false,
-      })
-    }
-  })
-</script>
+<script>
+  const input = document.getElementById('garage-search-input')
+  const status = document.getElementById('garage-search-status')
+  const results = document.getElementById('garage-search-results')
 
-<style is:global>
-  #search .pagefind-ui {
-    --pagefind-ui-primary: #007aff;
-    --pagefind-ui-text: #1d1d1f;
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-border: #d2d2d7;
-    --pagefind-ui-tag: #f5f5f7;
+  if (!(input instanceof HTMLInputElement) || !status || !results) {
+    throw new Error('Search UI elements missing')
   }
-  #search .pagefind-ui__search-input {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1rem;
-    font-size: 1rem;
+
+  /** @type {Array<{slug:string,title:string,description:string,kicker:string,categoryName:string|null,publishDate:string|null,excerpt:string,url:string}>} */
+  let index = []
+  let ready = false
+
+  function formatDate(iso) {
+    if (!iso) return ''
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
   }
-</style>
+
+  function searchLocal(query) {
+    const terms = query
+      .toLowerCase()
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+    if (!terms.length) return index
+
+    return index
+      .map((entry) => {
+        const haystack = [
+          entry.title,
+          entry.description,
+          entry.kicker,
+          entry.categoryName ?? '',
+          entry.excerpt,
+          entry.slug.replace(/-/g, ' '),
+        ]
+          .join(' ')
+          .toLowerCase()
+
+        let score = 0
+        for (const term of terms) {
+          if (!haystack.includes(term)) return { entry, score: 0 }
+          if (entry.title.toLowerCase().includes(term)) score += 12
+          if (entry.description.toLowerCase().includes(term)) score += 8
+          if (entry.kicker.toLowerCase().includes(term)) score += 6
+          if (entry.excerpt.toLowerCase().includes(term)) score += 2
+          score += 1
+        }
+        return { entry, score }
+      })
+      .filter((row) => row.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((row) => row.entry)
+  }
+
+  function render(list, query) {
+    results.replaceChildren()
+    if (!ready) {
+      status.textContent = 'Loading search index…'
+      return
+    }
+    if (!query.trim()) {
+      status.textContent = `${index.length} published article${index.length === 1 ? '' : 's'}. Type to filter.`
+      return
+    }
+    if (!list.length) {
+      status.textContent = `No articles matching “${query.trim()}”.`
+      return
+    }
+    status.textContent = `${list.length} result${list.length === 1 ? '' : 's'}.`
+
+    for (const entry of list) {
+      const li = document.createElement('li')
+      li.className = 'card block'
+
+      const link = document.createElement('a')
+      link.href = entry.url
+      link.className = 'block no-underline'
+
+      const meta = document.createElement('div')
+      meta.className = 'flex flex-wrap items-center gap-2 text-xs text-terminal-text-dim'
+      if (entry.categoryName) {
+        const pill = document.createElement('span')
+        pill.className = 'category-pill'
+        pill.textContent = entry.categoryName
+        meta.appendChild(pill)
+      }
+      if (entry.publishDate) {
+        const time = document.createElement('time')
+        time.dateTime = entry.publishDate
+        time.textContent = formatDate(entry.publishDate)
+        meta.appendChild(time)
+      }
+
+      const title = document.createElement('h2')
+      title.className = 'mt-3 text-lg font-bold text-terminal-text'
+      title.textContent = entry.title
+
+      const summary = document.createElement('p')
+      summary.className = 'mt-2 text-sm leading-relaxed text-terminal-text-dim'
+      summary.textContent = entry.description || entry.excerpt
+
+      link.append(meta, title, summary)
+      li.appendChild(link)
+      results.appendChild(li)
+    }
+  }
+
+  async function loadIndex() {
+    try {
+      const res = await fetch('/api/search-index.json', { cache: 'no-store' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      index = await res.json()
+      ready = true
+      render(searchLocal(input.value), input.value)
+    } catch {
+      status.textContent = 'Could not load search index. Try refreshing the page.'
+    }
+  }
+
+  input.addEventListener('input', () => {
+    render(searchLocal(input.value), input.value)
+  })
+
+  const params = new URLSearchParams(window.location.search)
+  const initial = params.get('q')
+  if (initial) input.value = initial
+
+  loadIndex()
+  input.focus()
+</script>
