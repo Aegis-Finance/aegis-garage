@@ -23,6 +23,21 @@ function rewritePublicUrl(value) {
     .replaceAll(encodeURIComponent(`//${ORIGIN_HOST}`), encodeURIComponent(`//${PUBLIC_HOST}`))
 }
 
+function rewriteOAuthLocation(location) {
+  let loc = rewritePublicUrl(location)
+  if (!loc?.includes('github.com/login/oauth/authorize')) return loc
+
+  try {
+    const url = new URL(loc)
+    if (!url.searchParams.has('scope')) {
+      url.searchParams.set('scope', 'public_repo')
+    }
+    return url.toString()
+  } catch {
+    return loc
+  }
+}
+
 export default {
   async fetch(request) {
     const incoming = new URL(request.url)
@@ -51,7 +66,7 @@ export default {
 
     const location = outHeaders.get('Location')
     if (location) {
-      outHeaders.set('Location', rewritePublicUrl(location))
+      outHeaders.set('Location', rewriteOAuthLocation(location))
     }
 
     for (const [key, value] of outHeaders.entries()) {

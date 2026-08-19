@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Keystatic GitHub App setup — Aegis Garage</title>
+  </head>
+  <body>
+    <p>Redirecting to GitHub to create the Keystatic GitHub App…</p>
+    <form id="f" method="post" action="https://github.com/organizations/Aegis-Finance/settings/apps/new">
+      <input type="hidden" name="manifest" id="manifest" />
+    </form>
+    <script>
+      const manifest = {
+        name: 'Aegis-Finance Keystatic',
+        url: 'https://garage.aegisprotocol.org/keystatic',
+        redirect_url: 'https://garage.aegisprotocol.org/keystatic/branch/main',
+        callback_urls: [
+          'https://garage.aegisprotocol.org/api/keystatic/github/oauth/callback',
+          'http://127.0.0.1/api/keystatic/github/oauth/callback',
+        ],
+        public: true,
+        request_oauth_on_install: true,
+        default_permissions: {
+          contents: 'write',
+          metadata: 'read',
+          pull_requests: 'read',
+        },
+      }
+      document.getElementById('manifest').value = JSON.stringify(manifest)
+      document.getElementById('f').submit()
+    </script>
+  </body>
+</html>
