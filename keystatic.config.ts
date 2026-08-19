@@ -38,7 +38,7 @@ export default config({
     articles: collection({
       label: 'Articles',
       slugField: 'title',
-      path: 'content/articles/*',
+      path: 'content/articles/*/',
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
