@@ -1,0 +1,16 @@
+[Unit]
+Description=Aegis Garage (Astro + Keystatic)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/aegis-garage
+EnvironmentFile=/var/www/aegis-garage/.env
+ExecStart=/usr/bin/node /var/www/aegis-garage/dist/server/entry.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

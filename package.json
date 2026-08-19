@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build && pagefind --site dist/client",
+    "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "import:legacy": "node scripts/import-legacy-articles.mjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/markdoc": "^0.12.11",
+    "@astrojs/node": "^9.5.5",
     "@astrojs/react": "^4.2.0",
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.7",

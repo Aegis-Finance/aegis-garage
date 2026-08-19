@@ -1,2 +1,0 @@
-# Cloudflare Pages — optional KV for Astro session support (Keystatic admin OAuth).
-# Create a KV namespace in the dashboard and bind it as SESSION if deploy logs warn.
