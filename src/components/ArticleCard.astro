@@ -1,0 +1,57 @@
+---
+import { formatDate } from '../lib/site'
+
+interface Props {
+  slug: string
+  title: string
+  description?: string | null
+  publishDate?: string | null
+  categoryName?: string | null
+  categorySlug?: string | null
+  heroImage?: string | null
+}
+
+const { slug, title, description, publishDate, categoryName, categorySlug, heroImage } = Astro.props
+---
+
+<article class="card flex h-full flex-col overflow-hidden p-0">
+  {
+    heroImage && (
+      <a href={`/articles/${slug}`} class="block aspect-[16/9] overflow-hidden bg-terminal-bg">
+        <img
+          src={heroImage}
+          alt=""
+          class="h-full w-full object-cover transition hover:scale-[1.02]"
+          loading="lazy"
+          width="640"
+          height="360"
+        />
+      </a>
+    )
+  }
+  <div class="flex flex-1 flex-col p-6">
+    <div class="flex flex-wrap items-center gap-2 text-xs text-terminal-text-dim">
+      {
+        categoryName && categorySlug && (
+          <a href={`/category/${categorySlug}`} class="category-pill">
+            {categoryName}
+          </a>
+        )
+      }
+      {publishDate && <time datetime={publishDate}>{formatDate(publishDate)}</time>}
+    </div>
+    <h2 class="mt-3 text-xl font-bold leading-snug tracking-tight">
+      <a href={`/articles/${slug}`} class="hover:text-terminal-accent">
+        {title}
+      </a>
+    </h2>
+    {
+      description && (
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-terminal-text-dim">{description}</p>
+      )
+    }
+    <a href={`/articles/${slug}`} class="mt-4 text-sm font-medium text-terminal-accent hover:underline">
+      Read article →
+    </a>
+  </div>
+</article>

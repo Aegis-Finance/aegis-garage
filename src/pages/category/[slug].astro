@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ArticleCard from '../../components/ArticleCard.astro'
+import { getCategories, getCategoryMap, getArticlesByCategory } from '../../lib/content-fs'
+
+export function getStaticPaths() {
+  return getCategories().map((cat) => ({
+    params: { slug: cat.slug },
+  }))
+}
+
+const { slug } = Astro.params
+const categoryMap = getCategoryMap()
+const category = categoryMap.get(slug!)
+if (!category) {
+  return Astro.redirect('/')
+}
+
+const articles = getArticlesByCategory(slug!)
+---
+
+<BaseLayout
+  title={category.meta.name}
+  description={category.meta.description ?? `Articles in ${category.meta.name}.`}
+>
+  <section class="hero-glow border-b border-terminal-border">
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:py-16">
+      <p class="section-label">Category</p>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{category.meta.name}</h1>
+      {
+        category.meta.description && (
+          <p class="mt-4 max-w-2xl text-lg text-terminal-text-dim">{category.meta.description}</p>
+        )
+      }
+      <a href="/" class="mt-6 inline-block text-sm font-medium text-terminal-accent hover:underline">
+        ← All articles
+      </a>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    {
+      articles.length === 0 ? (
+        <p class="text-terminal-text-dim">No published articles in this category yet.</p>
+      ) : (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => (
+            <ArticleCard
+              slug={article.slug}
+              title={article.meta.title}
+              description={article.meta.description ?? null}
+              publishDate={article.meta.publishDate ?? null}
+              categoryName={category.meta.name}
+              categorySlug={category.slug}
+              heroImage={article.meta.heroImage ?? null}
+            />
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

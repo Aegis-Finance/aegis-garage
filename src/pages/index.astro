@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ArticleCard from '../components/ArticleCard.astro'
+import { getPublishedArticles, getCategoryMap } from '../lib/content-fs'
+
+const articles = getPublishedArticles()
+const categoryMap = getCategoryMap()
+const [featured, ...rest] = articles
+
+function categoryFor(slug: string | undefined) {
+  if (!slug) return { name: null, slug: null }
+  const cat = categoryMap.get(slug)
+  return cat ? { name: cat.meta.name, slug: cat.slug } : { name: null, slug: null }
+}
+
+function formatDate(iso: string | undefined) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+---
+
+<BaseLayout
+  title="Garage"
+  description="Essays and research from Aegis — privacy finance, sound money, and building on Sonic."
+>
+  <section class="hero-glow border-b border-terminal-border">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:py-20">
+      <p class="section-label">Aegis Garage</p>
+      <h1 class="mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+        Essays on privacy, liberty, and building in public
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-terminal-text-dim">
+        Long-form writing from the team — economics, cryptography, governance, and the ideas behind the protocol.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/search" class="btn-primary">Search articles</a>
+        <a href="https://doc.aegisprotocol.org" class="btn-ghost border border-terminal-border" target="_blank" rel="noopener noreferrer">
+          Read docs →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {
+    featured && (
+      <section class="mx-auto max-w-6xl px-4 py-14">
+        <p class="section-label">Featured</p>
+        <a
+          href={`/articles/${featured.slug}`}
+          class="mt-4 block rounded-2xl border border-terminal-border bg-terminal-surface p-8 shadow-aegis transition hover:border-terminal-accent/30 sm:p-10"
+        >
+          <div class="flex flex-wrap items-center gap-2 text-sm text-terminal-text-dim">
+            {
+              featured.meta.category && (
+                <span class="category-pill">{categoryFor(featured.meta.category).name}</span>
+              )
+            }
+            {featured.meta.publishDate && <time datetime={featured.meta.publishDate}>{formatDate(featured.meta.publishDate)}</time>}
+          </div>
+          <h2 class="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">{featured.meta.title}</h2>
+          {
+            featured.meta.description && (
+              <p class="mt-3 max-w-3xl text-lg text-terminal-text-dim">{featured.meta.description}</p>
+            )
+          }
+          <span class="mt-6 inline-block text-sm font-medium text-terminal-accent">Read now →</span>
+        </a>
+      </section>
+    )
+  }
+
+  <section class="mx-auto max-w-6xl px-4 pb-20">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <p class="section-label">Latest</p>
+        <h2 class="mt-2 text-2xl font-bold">Recent articles</h2>
+      </div>
+    </div>
+    {
+      rest.length === 0 && !featured ? (
+        <p class="mt-8 text-terminal-text-dim">No articles published yet. Check back soon.</p>
+      ) : (
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {(featured ? rest : articles).map((article) => {
+            const cat = categoryFor(article.meta.category)
+            return (
+              <ArticleCard
+                slug={article.slug}
+                title={article.meta.title}
+                description={article.meta.description ?? null}
+                publishDate={article.meta.publishDate ?? null}
+                categoryName={cat.name}
+                categorySlug={cat.slug}
+                heroImage={article.meta.heroImage ?? null}
+              />
+            )
+          })}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

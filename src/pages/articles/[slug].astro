@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ArticleCard from '../../components/ArticleCard.astro'
+import {
+  getPublishedArticles,
+  getCategoryMap,
+  getArticle,
+} from '../../lib/content-fs'
+
+export function getStaticPaths() {
+  return getPublishedArticles().map((article) => ({
+    params: { slug: article.slug },
+  }))
+}
+
+const { slug } = Astro.params
+const article = getArticle(slug!)
+if (!article || article.meta.draft) {
+  return Astro.redirect('/')
+}
+
+const categoryMap = getCategoryMap()
+const cat = article.meta.category ? categoryMap.get(article.meta.category) : null
+const related = getPublishedArticles()
+  .filter((a) => a.slug !== slug && a.meta.category === article.meta.category)
+  .slice(0, 3)
+
+function formatDate(iso: string | null | undefined) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+---
+
+<BaseLayout title={article.meta.title} description={article.meta.description ?? undefined}>
+  <article class="hero-glow border-b border-terminal-border">
+    {
+      article.meta.heroImage && (
+        <div class="mx-auto max-w-4xl px-4 pt-8">
+          <img
+            src={article.meta.heroImage}
+            alt=""
+            class="w-full rounded-2xl border border-terminal-border object-cover shadow-aegis"
+            width="960"
+            height="540"
+          />
+        </div>
+      )
+    }
+    <header class="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      <div class="flex flex-wrap items-center gap-3 text-sm text-terminal-text-dim">
+        {
+          cat && (
+            <a href={`/category/${cat.slug}`} class="category-pill">
+              {cat.meta.name}
+            </a>
+          )
+        }
+        {
+          article.meta.publishDate && (
+            <time datetime={article.meta.publishDate}>{formatDate(article.meta.publishDate)}</time>
+          )
+        }
+      </div>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{article.meta.title}</h1>
+      {
+        article.meta.description && (
+          <p class="mt-4 text-lg leading-relaxed text-terminal-text-dim">{article.meta.description}</p>
+        )
+      }
+    </header>
+  </article>
+
+  <div class="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+    <div class="prose-garage" data-pagefind-body set:html={article.bodyHtml} />
+  </div>
+
+  {
+    related.length > 0 && (
+      <section class="border-t border-terminal-border bg-terminal-surface/30 py-14">
+        <div class="mx-auto max-w-6xl px-4">
+          <p class="section-label">Related</p>
+          <h2 class="mt-2 text-xl font-bold">More in {cat?.meta.name ?? 'this topic'}</h2>
+          <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((item) => {
+              const relCat = item.meta.category ? categoryMap.get(item.meta.category) : null
+              return (
+                <ArticleCard
+                  slug={item.slug}
+                  title={item.meta.title}
+                  description={item.meta.description ?? null}
+                  publishDate={item.meta.publishDate ?? null}
+                  categoryName={relCat?.meta.name ?? null}
+                  categorySlug={relCat?.slug ?? null}
+                  heroImage={item.meta.heroImage ?? null}
+                />
+              )
+            })}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

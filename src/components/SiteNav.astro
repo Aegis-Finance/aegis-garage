@@ -1,0 +1,65 @@
+---
+import { SITE_LINKS } from '../lib/site'
+import { getCategories } from '../lib/content-fs'
+
+interface Props {
+  current?: 'garage'
+}
+
+const { current } = Astro.props
+const categories = getCategories()
+---
+
+<header class="sticky top-0 z-50 border-b border-terminal-border/80 bg-terminal-bg/90 backdrop-blur-lg">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5">
+    <div class="flex items-center gap-6">
+      <a href="/" class="font-display text-base font-bold uppercase tracking-[0.32em] text-terminal-text">
+        AEGIS
+      </a>
+      <span class="hidden text-sm font-medium text-terminal-text-dim sm:inline">Garage</span>
+    </div>
+    <nav class="flex flex-wrap items-center gap-0.5 sm:gap-1 text-sm" aria-label="Site">
+      {
+        SITE_LINKS.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'btn-ghost',
+              link.label === 'Garage' && current === 'garage' && 'btn-ghost-active',
+            ]}
+            target={link.label === 'Garage' ? undefined : '_blank'}
+            rel={link.label === 'Garage' ? undefined : 'noopener noreferrer'}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  {
+    categories.length > 0 && (
+      <div class="border-t border-terminal-border/60 bg-terminal-surface/50">
+        <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2.5 text-sm">
+          <span class="text-xs font-semibold uppercase tracking-wide text-terminal-text-dim">Topics</span>
+          {categories.map((cat) => (
+            <a href={`/category/${cat.slug}`} class="category-pill hover:border-terminal-accent/50">
+              {cat.meta.name}
+            </a>
+          ))}
+          <a href="/search" class="ml-auto btn-ghost text-xs" aria-label="Search articles">
+            Search ⌘K
+          </a>
+        </div>
+      </div>
+    )
+  }
+</header>
+
+<script>
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault()
+      window.location.href = '/search'
+    }
+  })
+</script>

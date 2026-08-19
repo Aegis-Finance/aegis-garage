@@ -1,0 +1,13 @@
+{
+  "0": "../layouts/BaseLayout.astro",
+  "1": "import-legacy-articles.mjs",
+  "2": "dependencies",
+  "3": "package.json",
+  "4": "Aegis Garage",
+  "5": "devDependencies",
+  "6": "[slug].astro",
+  "7": "compilerOptions",
+  "8": "astro.config.mjs",
+  "9": "keystatic.config.ts",
+  "10": "tailwind.config.mjs"
+}

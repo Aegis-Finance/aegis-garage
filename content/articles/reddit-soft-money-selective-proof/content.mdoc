@@ -1,0 +1,72 @@
+*A note on why Aegis exists — and what we are building on Sonic.*
+
+---
+
+Traditional finance fails in two coupled ways. First, the unit of account can be expanded by committees, so prices stop being clean compressions of scarcity and time preference. Second, coordination runs through custodians who must see, hold, and often report your life in order to clear it. Soft money and soft custody are the same habit: trust a privileged observer.
+
+When the base is elastic, Cantillon redistribution arrives before productivity does. Early receivers of new money meet lower prices; late receivers meet higher ones. When custody is institutional, the map of prices arrives with a dossier. Counterparties, employers, and regulators inherit a permanent diary as the price of clearance. You do not merely pay fees. You perform your balance sheet for people you did not choose.
+
+Bitcoin was not a fashion. It was an existence proof that you can remove the privileged mint. In [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf), Satoshi Nakamoto replaced institutional trust with a public history: transactions must be publicly announced and ordered by the network, so a coin cannot be spent twice without the spend being visible. That is an elegant answer to a precise problem — double-spending under adversarial participants — and it restored hardness to the monetary base in a form anyone can verify.
+
+What it did not restore was discretion over the graph of your life. The cost of eliminating a trusted mint was total announcement of state transitions. Markets still needed honest signals. People still needed a place to save, borrow, insure, raise capital, get paid, and govern. Transparent ledgers gave us verifiability by making every balance and edge a public object. The medium stopped lying about supply, and started telling strangers almost everything else.
+
+![Three regimes of financial truth: soft money and soft custody → Bitcoin’s hard ledger → selective proof over a full finance surface.](https://raw.githubusercontent.com/Aegis-Finance/Aegis/master/assets/articles/three-regimes-of-financial-truth.jpg)
+
+That leftover variable is what I spend my time on.
+
+## The industry that scattered the answer
+
+Crypto did not ignore privacy. It scattered it.
+
+We got mixers bolted onto transparent lives. We got “private coins” that were hard to spend into a real economy. We got DeFi protocols that are brilliant at routing liquidity and indifferent to the fact that every swap, loan, and claim becomes a labeled story. We got crowdfunding and payroll rails that recreate GoFundMe and banking on a chain that never forgets who paid whom.
+
+The pattern is the same: a sharp tool in one corner, a public autobiography everywhere else. Sound money without a private life is incomplete. Privacy without a real economy is a toy. Most projects pick one corner and leave the rest of finance on someone else’s transparent ledger.
+
+I am not interested in slogans about “decentralization” that leave soft money and soft custody intact. I am interested in a partition: keep the map honest; stop treating the diary as a necessary input to verification. In formal terms, the network must decide a predicate — *this transition is valid* — without forcing the witness — *who, how much, to whom, in what pattern* — into the clear.
+
+Zero-knowledge proofs are how you implement that separation on a public chain. Commitments hide amounts and links. Proofs convince the verifier that conservation laws, membership, and authorization still hold. Selective disclosure lets a counterparty learn only what a contract requires: solvency for a loan, ownership for a raise, repayment history for a job — not your entire wallet autobiography.
+
+Privacy here is seasoning, not the meal. The meal is finance.
+
+## What Aegis is
+
+Aegis is a complete financial system on [Sonic](https://docs.soniclabs.com/) — trade, save, borrow, insure, vote, raise capital, pay people, and move money across chains — with privacy built in, not bolted on.
+
+AGS supply is fixed at **21 million**. No hidden inflation. No surprise mint. Upgrades and treasury decisions sit under on-chain governance with delay, so sensitive changes are not ambush. You do not need to understand Groth16 to use it. You need to understand the outcome: a place to actually live financially on-chain, where privacy is the default and the tools are serious enough to stay.
+
+The architecture is intentionally complete rather than clever in one corner. A privacy kernel — shielded ledger, verifier factory, entry and execution relays — sits under an economic surface. Modules are authorized to move shielded value under rules. Dual frontends exist so the system can be used without treating GitHub as the front door.
+
+## Life, not demos
+
+If the stack only shields a transfer, it is a curiosity. People need ordinary economic verbs.
+
+**Merchant payments and payroll.** A shop should be able to accept value without publishing a ranked customer graph. An employer should fund a vault; employees claim shielded payouts. Relayers can submit signed intents so a wallet is not forced to broadcast every step. Stealth addresses let you receive through one-time tags instead of reusing a traceable address.
+
+**Crowdfunding and staged capital.** Campaigns with milestones, refunds, and creator reputation — closer to a serious raise than a tip jar with a public donor board. Staged capital for projects that need allowlists and committee releases. Dutch auction for primary AGS issuance: price discovery in the open, caps so one wallet cannot vacuum the tranche, cryptographic verification on the private path so observers see that the sale executed, not a ranked buyer list.
+
+**Banking primitives.** Shielded balances as the primary store of value. Visible balance when pools or partners require compatibility. Private lending against collateral with proofs instead of a public credit file. Credit profiles that prove creditworthiness without exposing the wallet graph. Savings, locked yield, and stable commitments inside the shielded state.
+
+**Insurance and hedges.** Mutual coverage in the same privacy model — parametric, on-chain, scope-defined. Derivatives with oracle-backed, proof-settled outcomes. The roadmap also points toward real-world intelligence with programmable settlement — commercial motor and fleet telematics — where evidence settles claims without dumping dashcam files and PII onto a public ledger.
+
+**Trade and governance.** Swaps and liquidity, private AMM paths when confidentiality matters in the trade itself, limit orders and RFQ, staking and LP gauges with honest on-chain APR math. DAO proposals with shielded tally where votes are cast in hidden form and results finalize when the window closes — not a public straw poll before the count. Timelock on sensitive changes so users can react.
+
+**Cross-chain entry.** Sonic Gateway for USDC, USDT, EURC, WETH from Ethereum into Sonic, then into the same Aegis surface. A privacy bridge path where proofs apply.
+
+Everything routes through one shielded ecosystem: one token ledger, one verifier grammar, one governance layer, one router that registers authorized modules. Depth without fragmentation.
+
+## Three regimes, one sentence
+
+Soft money and soft custody: trust the observer; prices warp.  
+Bitcoin’s hard ledger: announce the spend; eliminate the mint.  
+Selective proof over a full finance surface: prove validity; season with privacy; live the market.
+
+Honest prices without institutional dossiers. Hard money without a public autobiography.
+
+---
+
+I am building this in the open. If the partition interests you — economist’s map, mathematician’s cut, coder’s stack — start at [aegisprotocol.org](https://aegisprotocol.org). Docs and app are linked from there when you want circuits and contracts.
+
+This subreddit is for people who want to argue the design, not the slogans. Leave a comment where you think the announcement constraint still binds, where selective disclosure is not enough, or where a full finance surface needs a sharper invariant than we have written yet.
+
+— Mike
+
