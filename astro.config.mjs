@@ -41,6 +41,11 @@ export default defineConfig({
         access: 'public',
         optional: true,
       }),
+      KEYSTATIC_STORAGE: envField.string({
+        context: 'server',
+        access: 'public',
+        optional: true,
+      }),
       HOST: envField.string({
         context: 'server',
         access: 'public',

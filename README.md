@@ -128,45 +128,56 @@ npx wrangler deploy --config wrangler-garage-proxy.toml
 
 ---
 
-## Keystatic admin (why articles may not show)
+## Keystatic admin
 
-The public site reads articles from **Git** at build time. The admin UI at `/keystatic` reads/writes **live via GitHub’s API**.
+The public site reads articles from **`content/` on disk** at request time. The admin UI is at **`/keystatic`**.
 
-**You need a GitHub App** (not the old classic OAuth App “Aegis Garage”). A classic OAuth App can log you in but cannot list or edit repo content in Keystatic.
+### Production (VPS): local storage (default)
 
-### Fix: create & install the Keystatic GitHub App
+Set on VPS `.env`:
 
-1. From `deploy/`, serve the setup helper:
-   ```bash
-   python -m http.server 8765
-   ```
-2. Open [http://127.0.0.1:8765/keystatic-github-app-setup.html](http://127.0.0.1:8765/keystatic-github-app-setup.html)
-3. Click **Create GitHub App for Aegis-Finance** (requires org owner / GitHub App manager)
-4. **Install** the app on `Aegis-Finance/aegis-garage` ([install URL](https://github.com/apps/aegis-finance-keystatic/installations/new) — slug may differ)
-5. From the app settings page, copy to VPS `/var/www/aegis-garage/.env`:
-   ```
+```env
+KEYSTATIC_STORAGE=local
+KEYSTATIC_SECRET=   # openssl rand -base64 32
+```
+
+With local storage, all 7 articles on disk appear in the admin immediately — no GitHub login required. Edits save to `/var/www/aegis-garage/content/` and show on the live site without rebuild.
+
+**Sync edits to GitHub** (optional, from VPS):
+
+```bash
+bash deploy/sync-content-to-github.sh
+```
+
+**Security note:** `/keystatic` is public unless you add Cloudflare Access or similar. Keep `KEYSTATIC_SECRET` set; consider restricting `/keystatic` at the edge.
+
+### Optional: GitHub-backed storage
+
+For commits straight to GitHub from the admin UI, use a **GitHub App** (not the classic OAuth App).
+
+1. Open [https://garage.aegisprotocol.org/keystatic-github-app-setup.html](https://garage.aegisprotocol.org/keystatic-github-app-setup.html) while logged into GitHub as an org owner
+2. **Install** the app on `Aegis-Finance/aegis-garage`
+3. Update VPS `.env`:
+   ```env
+   KEYSTATIC_STORAGE=github
    KEYSTATIC_GITHUB_CLIENT_ID=
-   KEYSTATIC_GITHUB_CLIENT_SECRET=   # Generate new client secret
-   KEYSTATIC_SECRET=               # openssl rand -base64 32
-   PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=aegis-finance-keystatic
+   KEYSTATIC_GITHUB_CLIENT_SECRET=
+   PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=
    ```
-6. Restart: `sudo systemctl restart aegis-garage`
-7. Log out and back in at `/keystatic` — articles should appear
+4. `sudo systemctl restart aegis-garage`
 
 **Callback URL:** `https://garage.aegisprotocol.org/api/keystatic/github/oauth/callback`
 
 **Permissions:** Contents read/write, Metadata read, Pull requests read.
-
-You can remove the old classic OAuth App at [GitHub OAuth settings](https://github.com/settings/developers) once the GitHub App works.
 
 ---
 
 ## Publishing workflow
 
 1. Edit at `https://garage.aegisprotocol.org/keystatic`
-2. Save — commits to `main` on GitHub
-3. On VPS: `bash deploy/deploy.sh` (or add a GitHub Action/webhook later)
-4. Public site updates after rebuild
+2. Save — updates `content/` on the VPS (live immediately)
+3. Optional: `bash deploy/sync-content-to-github.sh` on VPS to push to GitHub
+4. Code changes: `bash deploy/deploy.sh` on VPS after pulling from GitHub
 
 ---
 
@@ -176,10 +187,11 @@ See `.env.example`. Required for production admin:
 
 | Variable | Description |
 |----------|-------------|
-| `KEYSTATIC_GITHUB_CLIENT_ID` | From **GitHub App** (not OAuth App) |
+| `KEYSTATIC_STORAGE` | `local` (VPS default) or `github` |
+| `KEYSTATIC_GITHUB_CLIENT_ID` | From **GitHub App** when using `github` storage |
 | `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub App client secret |
 | `KEYSTATIC_SECRET` | Random 32+ chars (`openssl rand -base64 32`) |
-| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | App slug (e.g. `aegis-finance-keystatic`) |
+| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | App slug when using `github` storage |
 | `HOST` | `0.0.0.0` |
 | `PORT` | `4321` |
 
