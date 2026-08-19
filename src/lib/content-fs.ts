@@ -62,11 +62,27 @@ function resolveArticleTitle(
 }
 
 function readBody(dir: string): string {
+  const indexMdoc = join(dir, 'index.mdoc')
+  if (existsSync(indexMdoc)) {
+    const raw = readFileSync(indexMdoc, 'utf8')
+    const match = raw.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/)
+    return match?.[1]?.trimStart() ?? raw
+  }
   for (const name of ['content.mdoc', 'content.md']) {
     const path = join(dir, name)
     if (existsSync(path)) return readFileSync(path, 'utf8')
   }
   return ''
+}
+
+function readArticleMeta(dir: string, slug: string): ArticleMeta | null {
+  const indexMdoc = join(dir, 'index.mdoc')
+  if (existsSync(indexMdoc)) {
+    const raw = readFileSync(indexMdoc, 'utf8')
+    const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+    if (match) return loadYaml(match[1]) as ArticleMeta
+  }
+  return readYaml<ArticleMeta>(join(dir, 'index.yaml'))
 }
 
 export function getCategories(): Category[] {
@@ -93,9 +109,10 @@ export function getAllArticles(): Article[] {
     .filter((d) => d.isDirectory())
     .map((d) => {
       const slug = d.name
-      const meta = readYaml<ArticleMeta>(join(dir, slug, 'index.yaml'))
+      const dirPath = join(dir, slug)
+      const meta = readArticleMeta(dirPath, slug)
       if (!meta) return null
-      const body = readBody(join(dir, slug))
+      const body = readBody(dirPath)
       return {
         slug,
         meta: {
