@@ -1,7 +1,17 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { load as loadYaml } from 'js-yaml'
-import { marked } from 'marked'
+import { Marked } from 'marked'
+
+const renderer = {
+  link({ href, text }: { href: string; text: string }) {
+    const isExternal = href.startsWith('http')
+    const attrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : ''
+    return `<a href="${href}"${attrs}>${text}</a>`
+  },
+}
+
+const marked = new Marked({ breaks: false, gfm: true, renderer })
 
 const ROOT = join(process.cwd(), 'content')
 
@@ -11,6 +21,7 @@ export type ArticleMeta = {
   publishDate?: string
   category?: string
   heroImage?: string
+  featured?: boolean
   draft?: boolean
 }
 

@@ -2,15 +2,12 @@ import { config, fields, collection } from '@keystatic/core'
 
 const repo = process.env.KEYSTATIC_GITHUB_REPO ?? 'Aegis-Finance/aegis-garage'
 
-const storage =
-  process.env.KEYSTATIC_GITHUB_REPO && process.env.KEYSTATIC_GITHUB_CLIENT_ID
-    ? {
-        kind: 'github' as const,
-        repo,
-      }
-    : {
-        kind: 'local' as const,
-      }
+const isProd =
+  !!process.env.KEYSTATIC_GITHUB_REPO && !!process.env.KEYSTATIC_GITHUB_CLIENT_ID
+
+const storage = isProd
+  ? { kind: 'github' as const, repo }
+  : { kind: 'local' as const }
 
 export default config({
   storage,
@@ -55,11 +52,20 @@ export default config({
           directory: 'public/images/articles',
           publicPath: '/images/articles/',
         }),
+        featured: fields.checkbox({
+          label: 'Featured',
+          description: 'Show this article in the Featured section on the homepage.',
+          defaultValue: false,
+        }),
         draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
         content: fields.markdoc({
           label: 'Body',
           options: {
             link: true,
+            image: {
+              directory: 'public/images/articles',
+              publicPath: '/images/articles/',
+            },
           },
         }),
       },

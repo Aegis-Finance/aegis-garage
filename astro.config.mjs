@@ -7,7 +7,7 @@ import cloudflare from '@astrojs/cloudflare'
 
 export default defineConfig({
   site: 'https://garage.aegisprotocol.org',
-  output: 'static',
+  output: 'server',
   adapter: cloudflare({ imageService: 'compile' }),
   integrations: [react(), markdoc(), tailwind(), keystatic()],
   vite: {

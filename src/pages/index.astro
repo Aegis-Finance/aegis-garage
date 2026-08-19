@@ -1,11 +1,14 @@
 ---
+export const prerender = true
+
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ArticleCard from '../components/ArticleCard.astro'
 import { getPublishedArticles, getCategoryMap } from '../lib/content-fs'
 
 const articles = getPublishedArticles()
 const categoryMap = getCategoryMap()
-const [featured, ...rest] = articles
+const featured = articles.find((a) => a.meta.featured) ?? articles[0] ?? null
+const rest = articles.filter((a) => a !== featured)
 
 function categoryFor(slug: string | undefined) {
   if (!slug) return { name: null, slug: null }
