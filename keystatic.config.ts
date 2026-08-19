@@ -37,6 +37,10 @@ export default config({
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
+        kicker: fields.text({
+          label: 'Kicker (optional)',
+          description: 'Short subtitle shown directly under the title.',
+        }),
         description: fields.text({
           label: 'Description',
           description: 'Short summary for cards and search.',

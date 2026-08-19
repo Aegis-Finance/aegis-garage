@@ -69,6 +69,13 @@ function formatDate(iso: string | null | undefined) {
       </div>
       <h1 class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{article.meta.title}</h1>
       {
+        article.meta.kicker && (
+          <p class="mt-2 text-base font-medium leading-relaxed text-terminal-text-dim sm:text-lg">
+            {article.meta.kicker}
+          </p>
+        )
+      }
+      {
         article.meta.description && (
           <p class="mt-4 text-lg leading-relaxed text-terminal-text-dim">{article.meta.description}</p>
         )
@@ -93,6 +100,7 @@ function formatDate(iso: string | null | undefined) {
                 <ArticleCard
                   slug={item.slug}
                   title={item.meta.title}
+                  kicker={item.meta.kicker ?? null}
                   description={item.meta.description ?? null}
                   publishDate={item.meta.publishDate ?? null}
                   categoryName={relCat?.meta.name ?? null}

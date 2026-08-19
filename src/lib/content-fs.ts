@@ -17,6 +17,7 @@ const ROOT = join(process.cwd(), 'content')
 
 export type ArticleMeta = {
   title: string
+  kicker?: string
   description?: string
   publishDate?: string
   category?: string

@@ -4,6 +4,7 @@ import { formatDate } from '../lib/site'
 interface Props {
   slug: string
   title: string
+  kicker?: string | null
   description?: string | null
   publishDate?: string | null
   categoryName?: string | null
@@ -11,7 +12,7 @@ interface Props {
   heroImage?: string | null
 }
 
-const { slug, title, description, publishDate, categoryName, categorySlug, heroImage } = Astro.props
+const { slug, title, kicker, description, publishDate, categoryName, categorySlug, heroImage } = Astro.props
 ---
 
 <article class="card flex h-full flex-col overflow-hidden p-0">
@@ -45,6 +46,11 @@ const { slug, title, description, publishDate, categoryName, categorySlug, heroI
         {title}
       </a>
     </h2>
+    {
+      kicker && (
+        <p class="mt-1 text-sm font-medium leading-relaxed text-terminal-text-dim">{kicker}</p>
+      )
+    }
     {
       description && (
         <p class="mt-2 flex-1 text-sm leading-relaxed text-terminal-text-dim">{description}</p>

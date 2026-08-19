@@ -50,6 +50,7 @@ const articles = getArticlesByCategory(slug!)
             <ArticleCard
               slug={article.slug}
               title={article.meta.title}
+              kicker={article.meta.kicker ?? null}
               description={article.meta.description ?? null}
               publishDate={article.meta.publishDate ?? null}
               categoryName={category.meta.name}
