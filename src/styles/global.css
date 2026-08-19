@@ -51,4 +51,7 @@
   .prose-garage tbody tr:nth-child(even) {
     @apply bg-terminal-surface/40;
   }
+  .prose-garage a {
+    @apply break-words text-terminal-accent underline decoration-terminal-accent/40 underline-offset-2 hover:decoration-terminal-accent;
+  }
 }
