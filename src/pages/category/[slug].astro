@@ -1,15 +1,9 @@
 ---
-export const prerender = true
+export const prerender = false
 
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import ArticleCard from '../../components/ArticleCard.astro'
 import { getCategories, getCategoryMap, getArticlesByCategory } from '../../lib/content-fs'
-
-export function getStaticPaths() {
-  return getCategories().map((cat) => ({
-    params: { slug: cat.slug },
-  }))
-}
 
 const { slug } = Astro.params
 const categoryMap = getCategoryMap()

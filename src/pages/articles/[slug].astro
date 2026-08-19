@@ -1,5 +1,5 @@
 ---
-export const prerender = true
+export const prerender = false
 
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import ArticleCard from '../../components/ArticleCard.astro'
@@ -8,12 +8,6 @@ import {
   getCategoryMap,
   getArticle,
 } from '../../lib/content-fs'
-
-export function getStaticPaths() {
-  return getPublishedArticles().map((article) => ({
-    params: { slug: article.slug },
-  }))
-}
 
 const { slug } = Astro.params
 const article = getArticle(slug!)
