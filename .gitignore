@@ -6,3 +6,5 @@ dist/
 !.env.example
 graphify-out/
 *.log
+.cursor/
+DEVELOPMENT.md
