@@ -65,7 +65,7 @@ export default defineConfig({
       ),
     },
     ssr: {
-      external: ['js-yaml', '@markdoc/markdoc'],
+      external: ['js-yaml'],
     },
   },
   markdown: {

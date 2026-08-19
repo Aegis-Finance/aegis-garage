@@ -1,4 +1,6 @@
-import Markdoc, { nodes as markdocNodes, tags, Tag } from '@markdoc/markdoc'
+import Markdoc from '@markdoc/markdoc'
+
+const { nodes: markdocNodes, tags, Tag } = Markdoc
 
 const nodes = {
   ...markdocNodes,
