@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Essays update often — sitemap is generated live from published articles.
+Sitemap: https://garage.aegisprotocol.org/sitemap.xml

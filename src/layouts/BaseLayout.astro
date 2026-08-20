@@ -3,6 +3,9 @@ import SiteNav from '../components/SiteNav.astro'
 import { HOME, DOCS, APP, TGE, GARAGE } from '../lib/site'
 import '../styles/global.css'
 
+const canonicalPath = Astro.url.pathname.replace(/\/$/, '') || '/'
+const canonicalUrl = `${GARAGE}${canonicalPath === '/' ? '/' : canonicalPath}`
+
 interface Props {
   title: string
   description?: string
@@ -18,7 +21,8 @@ const { title, description = 'Essays and research from the Aegis team.' } = Astr
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#007aff" />
-    <link rel="canonical" href={Astro.url.href} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
