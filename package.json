@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/sync-public-images.mjs",
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "import:legacy": "node scripts/import-legacy-articles.mjs"
@@ -25,6 +25,7 @@
     "@astrojs/tailwind": "^6.0.2",
     "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.21",
+    "sharp": "^0.35.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.3"
   }

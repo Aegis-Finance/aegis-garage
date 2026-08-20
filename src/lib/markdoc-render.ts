@@ -1,4 +1,5 @@
 import Markdoc from '@markdoc/markdoc'
+import { resolvePublicAsset } from './public-assets'
 
 const { nodes: markdocNodes, tags, Tag } = Markdoc
 
@@ -57,6 +58,17 @@ export function preprocessMarkdocSource(source: string): string {
 
 const nodes = {
   ...markdocNodes,
+  image: {
+    ...markdocNodes.image,
+    transform(node, config) {
+      const src = String(node.attributes.src ?? '')
+      const attributes = node.transformAttributes(config)
+      if (src.startsWith('/images/')) {
+        attributes.src = resolvePublicAsset(src)
+      }
+      return new Tag('img', attributes)
+    },
+  },
   link: {
     ...markdocNodes.link,
     transform(node, config) {

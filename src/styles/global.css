@@ -54,4 +54,13 @@
   .prose-garage a {
     @apply break-words text-terminal-accent underline decoration-terminal-accent/40 underline-offset-2 hover:decoration-terminal-accent;
   }
+  .prose-garage img {
+    @apply my-8 w-full rounded-2xl border border-terminal-border shadow-aegis;
+  }
+  .article-hero {
+    @apply mb-10 sm:mb-12;
+  }
+  .article-hero img {
+    @apply my-0;
+  }
 }

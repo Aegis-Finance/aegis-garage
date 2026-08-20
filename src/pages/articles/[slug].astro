@@ -36,19 +36,6 @@ function formatDate(iso: string | null | undefined) {
 
 <BaseLayout title={article.meta.title} description={article.meta.description ?? undefined}>
   <article class="hero-glow border-b border-terminal-border">
-    {
-      article.meta.heroImage && (
-        <div class="mx-auto max-w-4xl px-4 pt-8">
-          <img
-            src={article.meta.heroImage}
-            alt=""
-            class="w-full rounded-2xl border border-terminal-border object-cover shadow-aegis"
-            width="960"
-            height="540"
-          />
-        </div>
-      )
-    }
     <header class="mx-auto max-w-3xl px-4 py-10 sm:py-14">
       <div class="flex flex-wrap items-center gap-3 text-sm text-terminal-text-dim">
         {
@@ -81,6 +68,20 @@ function formatDate(iso: string | null | undefined) {
   </article>
 
   <div class="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+    {
+      article.meta.heroImage && (
+        <figure class="article-hero">
+          <img
+            src={article.meta.heroImage}
+            alt=""
+            class="w-full rounded-2xl border border-terminal-border object-cover shadow-aegis"
+            width="960"
+            height="540"
+            decoding="async"
+          />
+        </figure>
+      )
+    }
     <div class="prose-garage" set:html={article.bodyHtml} />
   </div>
 

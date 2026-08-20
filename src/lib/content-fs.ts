@@ -2,6 +2,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { load as loadYaml } from 'js-yaml'
 import { renderMarkdocToHtml } from './markdoc-render'
+import { resolvePublicAsset } from './public-assets'
 
 const ROOT = join(process.cwd(), 'content')
 
@@ -108,6 +109,7 @@ export function getAllArticles(): Article[] {
         meta: {
           ...meta,
           title: resolveArticleTitle(meta.title, slug, body),
+          heroImage: meta.heroImage ? resolvePublicAsset(meta.heroImage) : meta.heroImage,
         },
         body,
         bodyHtml: renderMarkdocToHtml(body),
